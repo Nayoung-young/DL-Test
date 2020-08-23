@@ -23,11 +23,11 @@
                 </div>
                 <div class="circle-big">
                     <div class="text">
-                        0<div class="small">개</div>
+                        <span id="count">0</span><div class="small">개</div>
                     </div>
                     <svg>
                         <circle class="bg" cx="57" cy="57" r="52" />
-                        <circle class="progress" cx="57" cy="57" r="52" />
+                        <circle id ="progress" class="progress" cx="57" cy="57" r="52" />
                     </svg>
                 </div>
             </div>
@@ -85,6 +85,10 @@
             window.requestAnimationFrame(loop);
         }
 
+        var status = "stand"
+        var count = 0 
+        var progress = 327
+
         async function predict() {
             // Prediction #1: run input through posenet
             // estimatePose can take in an image, video or canvas html element
@@ -94,8 +98,18 @@
             if (prediction[0].probability.toFixed(2) >= 0.90) {
                 if (status == "squat") {
                     count++
+                    if(count%10===0){
+                        progress=327
+                    }else{
+                        progress=progress-32.7
+                    }
+                    progress = progress - 32.7
+
+                    document.getElementById("progress").style.strokeDashoffset=progress;
+                    document.getElementById('count').innerHTML = count
                     var audio = new Audio(count % 10 + ".mp3");
                     audio.play();
+
                 }
                 status = "stand"
             } else if (prediction[1].probability.toFixed(2) >= 0.9) {
